@@ -1,48 +1,68 @@
-#include "monty.h"
-/**
- * f_queue - prints the top
- * @head: stack head
- * @counter: line_number
- * Return: no return
-*/
-void f_queue(stack_t **head, unsigned int counter)
-{
-	(void)head;
-	(void)counter;
-	bus.lifi = 1;
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct QueueNode {
+    int data;
+    struct QueueNode* next;
+} QueueNode;
+
+typedef struct Queue {
+    QueueNode* front;
+    QueueNode* rear;
+} Queue;
+
+// Function to create a new queue
+Queue* createQueue() {
+    Queue* queue = (Queue*)malloc(sizeof(Queue));
+    queue->front = queue->rear = NULL;
+    return queue;
 }
 
-/**
- * addqueue - add node to the tail stack
- * @n: new_value
- * @head: head of the stack
- * Return: no return
-*/
-void addqueue(stack_t **head, int n)
-{
-	stack_t *new_node, *aux;
-
-	aux = *head;
-	new_node = malloc(sizeof(stack_t));
-	if (new_node == NULL)
-	{
-		printf("Error\n");
-	}
-	new_node->n = n;
-	new_node->next = NULL;
-	if (aux)
-	{
-		while (aux->next)
-			aux = aux->next;
-	}
-	if (!aux)
-	{
-		*head = new_node;
-		new_node->prev = NULL;
-	}
-	else
-	{
-		aux->next = new_node;
-		new_node->prev = aux;
-	}
+// Enqueue operation
+void enqueue(Queue* queue, int data) {
+    QueueNode* newNode = (QueueNode*)malloc(sizeof(QueueNode));
+    newNode->data = data;
+    newNode->next = NULL;
+    
+    if (queue->rear == NULL) {
+        queue->front = queue->rear = newNode;
+        return;
+    }
+    
+    queue->rear->next = newNode;
+    queue->rear = newNode;
 }
+
+// Dequeue operation
+int dequeue(Queue* queue) {
+    if (queue->front == NULL) {
+        printf("Queue Underflow\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    QueueNode* temp = queue->front;
+    int dequeuedData = temp->data;
+    queue->front = queue->front->next;
+
+    if (queue->front == NULL) {
+        queue->rear = NULL; // If the queue is empty, reset rear
+    }
+
+    free(temp);
+    return dequeuedData;
+}
+
+// Peek operation
+int peek(Queue* queue) {
+    if (queue->front == NULL) {
+        printf("Queue is empty\n");
+        exit(EXIT_FAILURE);
+    }
+    return queue->front->data;
+}
+
+// Check if empty
+int isEmpty(Queue* queue) {
+    return queue->front == NULL;
+}
+

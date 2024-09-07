@@ -1,26 +1,19 @@
-#include "monty.h"
-/**
-  *f_rotl- rotates the stack to the top
-  *@head: stack head
-  *@counter: line_number
-  *Return: no return
- */
-void f_rotl(stack_t **head,  __attribute__((unused)) unsigned int counter)
-{
-	stack_t *tmp = *head, *aux;
+   void rotl(stack_t **stack, unsigned int line_number)
+   {
+       if (*stack == NULL || (*stack)->next == NULL)
+           return; // No need to rotate if there's 0 or 1 element
 
-	if (*head == NULL || (*head)->next == NULL)
-	{
-		return;
-	}
-	aux = (*head)->next;
-	aux->prev = NULL;
-	while (tmp->next != NULL)
-	{
-		tmp = tmp->next;
-	}
-	tmp->next = *head;
-	(*head)->next = NULL;
-	(*head)->prev = tmp;
-	(*head) = aux;
-}
+       stack_t *top = *stack;
+       stack_t *second = top->next;
+
+       // Find the last element
+       while (second->next != NULL)
+           second = second->next;
+
+       // Rotate
+       *stack = top->next; // New top is the second element
+       top->next = NULL;   // Remove old top from its position
+       second->next = top; // Last element points to old top
+   }
+   
+
